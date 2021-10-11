@@ -43,5 +43,6 @@ void loop() {
     Serial.print("Side Complete");
     
   }
+  Left_Wheel_Motor->run(RELEASE);
   delay(5000);
 }
