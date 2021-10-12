@@ -37,12 +37,12 @@ void loop() {
     Right_Wheel_Motor->setSpeed(100);
     Left_Wheel_Motor->run(FORWARD);
     Right_Wheel_Motor->run(FORWARD);
-    delay(1000);
+    delay(10000);
     Right_Wheel_Motor->run(RELEASE);
-    delay(1000);
+    delay(10000);
     Serial.print("Side Complete");
     
   }
   Left_Wheel_Motor->run(RELEASE);
-  delay(5000);
+  delay(50000);
 }
