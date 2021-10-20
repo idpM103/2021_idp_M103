@@ -4,21 +4,25 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 
-#define left_sensor_pin0 A3
-#define left_sensor_pin1 A2
-#define right_sensor_pin0 A1
-#define right_sensor_pin1 A0
+#define left_most A3
+#define left_inner A2
+#define right_inner A1
+#define right_most A0
+const int buttonPin = 7;     // the number of the pushbutton pin
 
-int left_sensor_value0;      // Left line sensor value-  higher number => lighter
-int left_sensor_value1;
-int right_sensor_value0;     // Right line sensor value
-int right_sensor_value1;
+// variables will change:
+int buttonState = HIGH;         // variable for reading the pushbutton status
+int toggle_state = LOW;
+
+
+int left_most_value;      // Left line sensor value-  higher number => lighter
+int left_inner_value;
+int right_inner_value;     // Right line sensor value
+int right_most_value;
 
 int delta_threshold = 100;// Cut-off for sensor reading being over the line or not
-int threshold = 700;
-#define right_motor_speed 215     // Standard speed of right motor
-#define left_motor_speed 200  // Standard speed of left motor
-
+int threshold = 800;
+#define motor_speed 50     // Standard speed of motor
 int both_option = 1;
 int both_happening = 0;
 int left0;
@@ -46,39 +50,41 @@ void setup() {
   // Set up serial communication
   Serial.begin(9600);
   AFMS.begin();
+  pinMode(buttonPin, INPUT);
 }
 
 void loop() {
   // Read line sensors and output values
-  left_sensor_value0  = analogRead(left_sensor_pin0);
-  left_sensor_value1  = analogRead(left_sensor_pin1);
-  right_sensor_value0 = analogRead(right_sensor_pin0);
-  right_sensor_value1 = analogRead(right_sensor_pin1);
-  /*Serial.print(left_sensor_value0);
-  Serial.print(left_sensor_value1);
-  Serial.print(right_sensor_value0);
-  Serial.print();
+  left_most_value  = analogRead(left_most);
+  left_inner_value  = analogRead(left_inner);
+  right_inner_value = analogRead(right_inner);
+  right_most_value = analogRead(right_most);
+  Serial.println(left_most_value);
+  Serial.println(left_inner_value);
+  Serial.println(left_inner_value);
+  Serial.println(right_most_value);
+  
+  
 
-  Serial.println(both_option);
-  Serial.print("Left: ");
-  Serial.print(left_sensor_value);
-  Serial.print("     Right: ");
-  Serial.println(right_sensor_value);*/
+  
+  
   // Left sensor over line
   
-  if (left_sensor_value1>threshold && right_sensor_value0>threshold && left_sensor_value0>threshold && right_sensor_value1 > threshold) {
+  if (left_most_value>threshold && left_inner_value>threshold && right_inner_value>threshold && right_most_value > threshold) {
 
     forwards();
   }
   // Right sensor over line
-  /*else if (left_sensor_value1<threshold && right_sensor_value0<threshold && left_sensor_value0<threshold && right_sensor_value1 < threshold) {
+  else if (left_most_value<threshold && left_inner_value<threshold && right_inner_value<threshold && right_most_value < threshold) {
 
     halt();
-  }*/
-  else if (left_sensor_value1<threshold && right_sensor_value0<threshold && left_sensor_value0 > threshold && right_sensor_value1 < threshold) {
+  }
+  else if ((left_most_value>threshold && left_inner_value>threshold && right_inner_value < threshold && right_most_value > threshold) ||
+         ( left_most_value>threshold && left_inner_value>threshold && right_inner_value > threshold && right_most_value < threshold )) {
     left();
   }
-    else if (left_sensor_value1>threshold && right_sensor_value0>threshold && left_sensor_value0 < threshold && right_sensor_value1 > threshold) {
+    else if ((left_most_value>threshold && left_inner_value<threshold && right_inner_value > threshold && right_most_value > threshold) ||
+            (left_most_value<threshold && left_inner_value>threshold && right_inner_value > threshold && right_most_value > threshold)) {
     right();
   }
   // Neither sensor over a line
@@ -92,25 +98,25 @@ void loop() {
 
 
 void forwards(){
-  LeftMotor->setSpeed(left_motor_speed); 
-  RightMotor->setSpeed(right_motor_speed);
+  LeftMotor->setSpeed(motor_speed); 
+  RightMotor->setSpeed(motor_speed);
   LeftMotor->run(FORWARD);
   RightMotor->run(FORWARD);
 }
 
 void right(){
   Serial.println("turning right ");
-  LeftMotor->setSpeed(left_motor_speed); 
-  RightMotor->setSpeed(0.1*right_motor_speed);
+  LeftMotor->setSpeed(motor_speed); 
+  RightMotor->setSpeed(0.1*motor_speed);
   LeftMotor->run(FORWARD);
-  RightMotor->run(FORWARD);
+  RightMotor->run(RELEASE);
 }
 
 void left(){
   Serial.println("turning left ");
-  LeftMotor->setSpeed(0.1*left_motor_speed); 
-  RightMotor->setSpeed(right_motor_speed);
-  LeftMotor->run(FORWARD);
+  LeftMotor->setSpeed(0.1*motor_speed); 
+  RightMotor->setSpeed(motor_speed);
+  LeftMotor->run(RELEASE);
   RightMotor->run(FORWARD);
 }
 
