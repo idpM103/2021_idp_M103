@@ -16,7 +16,9 @@ int right_sensor_value1;
 
 int delta_threshold = 100;// Cut-off for sensor reading being over the line or not
 int threshold = 700;
-#define motor_speed 255     // Standard speed of motor
+#define right_motor_speed 215     // Standard speed of right motor
+#define left_motor_speed 200  // Standard speed of left motor
+
 int both_option = 1;
 int both_happening = 0;
 int left0;
@@ -90,24 +92,24 @@ void loop() {
 
 
 void forwards(){
-  LeftMotor->setSpeed(motor_speed); 
-  RightMotor->setSpeed(motor_speed);
+  LeftMotor->setSpeed(left_motor_speed); 
+  RightMotor->setSpeed(right_motor_speed);
   LeftMotor->run(FORWARD);
   RightMotor->run(FORWARD);
 }
 
 void right(){
   Serial.println("turning right ");
-  LeftMotor->setSpeed(motor_speed); 
-  RightMotor->setSpeed(0.1*motor_speed);
+  LeftMotor->setSpeed(left_motor_speed); 
+  RightMotor->setSpeed(0.1*right_motor_speed);
   LeftMotor->run(FORWARD);
   RightMotor->run(FORWARD);
 }
 
 void left(){
   Serial.println("turning left ");
-  LeftMotor->setSpeed(0.1*motor_speed); 
-  RightMotor->setSpeed(motor_speed);
+  LeftMotor->setSpeed(0.1*left_motor_speed); 
+  RightMotor->setSpeed(right_motor_speed);
   LeftMotor->run(FORWARD);
   RightMotor->run(FORWARD);
 }
