@@ -43,9 +43,10 @@ void setup() {
   printMacAddress(mac);
 
   // prints local ip address too:
-  IPAddress ip;
-  ip = WiFi.localIP();
-  Serial.println(ip);
+  IPAddress gateway;
+  gateway = WiFi.gatewayIP();
+  Serial.print("GATEWAY: ");
+  Serial.println(gateway);
 
 }
 
