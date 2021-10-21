@@ -4,16 +4,16 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 
-#define left_most A3
-#define left_inner A2
-#define right_inner A1
-#define right_most A0
+#define LEFT_MOST A3
+#define LEFT_INNER A2
+#define RIGHT_INNER A1
+#define RIGHT_MOST A0
 const int buttonPin = 7;     // the number of the pushbutton pin
 
 // variables will change:
 int buttonState = HIGH;         // variable for reading the pushbutton status
 int toggle_state = LOW;
-
+int backward_state = LOW;
 
 int left_most_value;      // Left line sensor value-  higher number => lighter
 int left_inner_value;
@@ -21,19 +21,23 @@ int right_inner_value;     // Right line sensor value
 int right_most_value;
 
 int delta_threshold = 100;// Cut-off for sensor reading being over the line or not
-int threshold = 800;
-#define motor_speed 50     // Standard speed of motor
+int threshold = 900;
+#define motor_speed 255     // Standard speed of motor
 int both_option = 1;
 int both_happening = 0;
 int left0;
 int left1;
 int right0;
 int right1;
+int count = 0;
+int turning_state = 0;
 
 void forwards ();
 void halt ();
-void left ();
-void right ();
+void large_left ();
+void small_left ();
+void large_right ();
+void small_right ();
 
 unsigned long prev_increment_time_0 = 0;
 unsigned long prev_increment_time_1 = 0;
@@ -55,46 +59,94 @@ void setup() {
 
 void loop() {
   // Read line sensors and output values
-  left_most_value  = analogRead(left_most);
-  left_inner_value  = analogRead(left_inner);
-  right_inner_value = analogRead(right_inner);
-  right_most_value = analogRead(right_most);
+  left_most_value  = analogRead(LEFT_MOST);
+  left_inner_value  = analogRead(LEFT_INNER);
+  right_inner_value = analogRead(RIGHT_INNER);
+  right_most_value = analogRead(RIGHT_MOST);
   Serial.println(left_most_value);
   Serial.println(left_inner_value);
   Serial.println(left_inner_value);
   Serial.println(right_most_value);
-  
+  buttonState = digitalRead(buttonPin);
+
+  // ultrasonic sensor 
+  if (buttonState == LOW) {
+    toggle_state = ! toggle_state; }
   
 
+  if (toggle_state == LOW) {
   
-  
-  // Left sensor over line
+
+      //delay(50);
+  // if all black, keep moving forward
   
   if (left_most_value>threshold && left_inner_value>threshold && right_inner_value>threshold && right_most_value > threshold) {
-
+    if (turning_state == 0){
     forwards();
+    }
+    else if(turning_state == 1){
+      large_right();
+    }
+    else if(turning_state == 2){
+      large_left();
+    }
   }
-  // Right sensor over line
-  else if (left_most_value<threshold && left_inner_value<threshold && right_inner_value<threshold && right_most_value < threshold) {
-
+  
+  // if outskirt sensors white, stop
+  
+  else if (left_most_value<threshold && right_most_value < threshold) {
+  
     halt();
+    //delay(50);
+    count += 1;
+
   }
-  else if ((left_most_value>threshold && left_inner_value>threshold && right_inner_value < threshold && right_most_value > threshold) ||
-         ( left_most_value>threshold && left_inner_value>threshold && right_inner_value > threshold && right_most_value < threshold )) {
-    left();
+  // a bit to the right, left most inner black,  white, right most black
+
+  else if (left_most_value>threshold && left_inner_value>threshold && right_inner_value < threshold && right_most_value > threshold) {
+    small_right();
+    turning_state = 0;
+    //delay(50);
+
+    }
+  // a LOT to the right, left most inner,right inner black, right most white  
+   else if (left_most_value>threshold && left_inner_value>threshold && right_inner_value > threshold && right_most_value < threshold ) {
+    large_right();
+    turning_state = 1;
+    //delay(100);
+
+   
   }
-    else if ((left_most_value>threshold && left_inner_value<threshold && right_inner_value > threshold && right_most_value > threshold) ||
-            (left_most_value<threshold && left_inner_value>threshold && right_inner_value > threshold && right_most_value > threshold)) {
-    right();
+    // a bit to the left
+    else if (left_most_value>threshold && left_inner_value<threshold && right_inner_value > threshold && right_most_value > threshold) {
+      small_left();
+      turning_state = 0;
+      //delay(50);
+
+      }
+    // a LOT to the left
+    else if (left_most_value<threshold && left_inner_value>threshold && right_inner_value > threshold && right_most_value > threshold) {
+      large_left();
+      //delay(100);
+      turning_state = 2;
+      }
+
+    if (count == 3){
+
+      
+      
+      }
+   
+
   }
-  // Neither sensor over a line
   
  
-  // Both sensors over a line
   else {
   ;
     }
   }
+
+
 
 
 void forwards(){
@@ -104,28 +156,47 @@ void forwards(){
   RightMotor->run(FORWARD);
 }
 
-void right(){
+void small_left(){
   Serial.println("turning right ");
   LeftMotor->setSpeed(motor_speed); 
-  RightMotor->setSpeed(0.1*motor_speed);
+  RightMotor->setSpeed(0.6*motor_speed);
   LeftMotor->run(FORWARD);
-  RightMotor->run(RELEASE);
-}
-
-void left(){
-  Serial.println("turning left ");
-  LeftMotor->setSpeed(0.1*motor_speed); 
-  RightMotor->setSpeed(motor_speed);
-  LeftMotor->run(RELEASE);
   RightMotor->run(FORWARD);
 }
+
+void large_left(){
+  Serial.println("turning right ");
+  LeftMotor->setSpeed(motor_speed); 
+  RightMotor->setSpeed(0.05*motor_speed);
+  LeftMotor->run(FORWARD);
+  RightMotor->run(FORWARD);
+}
+
+
+void small_right(){
+  Serial.println("turning left ");
+  LeftMotor->setSpeed(0.6*motor_speed); 
+  RightMotor->setSpeed(motor_speed);
+  LeftMotor->run(FORWARD);
+  RightMotor->run(FORWARD);
+}
+
+void large_right(){
+  Serial.println("turning left ");
+  LeftMotor->setSpeed(0.05*motor_speed); 
+  RightMotor->setSpeed(motor_speed);
+  LeftMotor->run(FORWARD);
+  RightMotor->run(FORWARD);
+}
+
+
 
 void halt(){
   Serial.println("stopping ");
   LeftMotor->run(RELEASE);
   RightMotor->run(RELEASE);
 }
-
+/*
 void both(int option){  //what to do when both sensors hit line. each option is in the sequence of what is expected to happen
   if (option == 1){ //option 1: Coming out of my cage
     forwards();
@@ -169,3 +240,4 @@ void increment_option(){
       prev_increment_time_0 = millis();
     }
 }
+*/
