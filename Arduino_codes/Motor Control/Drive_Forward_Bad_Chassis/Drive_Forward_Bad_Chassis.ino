@@ -34,19 +34,16 @@ void setup() {
 void loop() {
   uint8_t i;
   
-  buttonState = digitalRead(buttonPin);
-  serial.println(buttonState)
-  if (buttonState == HIGH) {
   Left_Wheel_Motor->setSpeed(200);
   Right_Wheel_Motor->setSpeed(215);
   Left_Wheel_Motor->run(FORWARD);
   Right_Wheel_Motor->run(FORWARD);
   delay(10000);
-  Serial.print("Test Complete");
+  Serial.println("Test Complete");
   delay(20000);
   } 
 
-  Serial.print("Start");
+  Serial.println("Start");
   //this is to make 
 
 }
