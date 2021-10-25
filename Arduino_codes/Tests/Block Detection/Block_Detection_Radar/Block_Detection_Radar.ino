@@ -44,11 +44,15 @@ void loop() {
       distance_average += distance_array[i];
     }
     distance_average = distance_average/10;
+
+    // Once we have done ten readings, we move one increment
     Left_Wheel_Motor->run(FORWARD);
     Right_Wheel_Motor->run(BACKWARD);
     delay (5);
     Left_Wheel_Motor->run(RELEASE);
     Right_Wheel_Motor ->run(RELEASE);
+
+    // Add the average in the array
     block_distance_array[angle] = distance_average;
     angle += 1;
     counter = 0; 
@@ -58,7 +62,7 @@ void loop() {
     for (int i = 0; i <=179;i++){
       if (block_distance_array[i] < lowest_distance) {
         lowest_distance = block_distance_array[i];
-      } else if (block_distance_array[i] == lowest_distance) {
+      } else if (block_distance_array[i] == lowest_distance) { //If there's multiple lowest distance numbers, we find the mean angle of how many there are
         number_lowest_distance += i;
         counter += 1;
     }
