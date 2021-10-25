@@ -16,10 +16,9 @@ Adafruit_DCMotor *Left_Wheel_Motor = AFMS.getMotor(4);
 Adafruit_DCMotor *Right_Wheel_Motor = AFMS.getMotor(3);
 
 
-
 void setup() {
   Serial.begin(9600);           // set up Serial library at 9600 bps
-
+  Serial.println("Rotation test!");
   
   if (!AFMS.begin()) {         // create with the default frequency 1.6KHz
   // if (!AFMS.begin(1000)) {  // OR with a different frequency, say 1KHz
@@ -32,11 +31,11 @@ void setup() {
 void loop() {
 
   
-  Left_Wheel_Motor->setSpeed(230);
-  Right_Wheel_Motor->setSpeed(255);
-  Left_Wheel_Motor->run(FORWARD);
+  Left_Wheel_Motor->setSpeed(200);
+  Right_Wheel_Motor->setSpeed(215);
+  Left_Wheel_Motor->run(BACKWARD);
   Right_Wheel_Motor->run(FORWARD);
-  delay(10000);
+  delay(5000);
   Serial.println("Test Complete");
-  delay(20000);
+  while (1);
   } 
