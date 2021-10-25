@@ -41,9 +41,7 @@ void left ();
 void right ();
 void rotate_right();
 void rotate_left();
-unsigned long prev_increment_time_0 = 0;
-unsigned long prev_increment_time_1 = 0;
-const long min_increment_interval = 1000;
+void reset_wibich();
 
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
@@ -64,14 +62,18 @@ void loop() {
   current_button_value = digitalRead(buttonPin);
   if (previous_button_value == HIGH && current_button_value == LOW){
     if (button_state == LOW){
-      button_state = HIGH;
+      //button_state = HIGH;
+      button_state = !button_state;
+      previous_button_value = current_button_value;
     }
     else if(button_state == HIGH)
     {
-      button_state = LOW;
+      // button_state = LOW;
+      previous_button_value = current_button_value;
     }
+    //previous_button_value = current_button_value;
+
   }
-  previous_button_value = current_button_value;
   
   //The operation of the robot will only be triggered if the button state is true.
   if (button_state == HIGH) {
@@ -203,15 +205,28 @@ void halt() {
   LeftMotor->run(RELEASE);
   RightMotor->run(RELEASE);
 }
+
 void rotate_right(){
   LeftMotor->setSpeed(left_motor_speed);
   RightMotor->setSpeed(right_motor_speed);
   LeftMotor->run(FORWARD);
   RightMotor->run(BACKWARD);
 }
+
 void rotate_left(){
   LeftMotor->setSpeed(left_motor_speed);
   RightMotor->setSpeed(right_motor_speed);
   LeftMotor->run(BACKWARD);
   RightMotor->run(FORWARD);
+}
+
+
+void reset_wibich(){
+  halt();
+  button_state = LOW;        
+  reverse_state = HIGH;
+  line_follow_state = HIGH;
+  block_detect_state = LOW;
+  button_counter = 0;
+  junction_counter = 0;
 }
