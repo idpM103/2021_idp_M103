@@ -59,21 +59,16 @@ void setup() {
 //确认button按下输出低
 void loop() {
   // Use a button to start and end the operation of the robot.
+  previous_button_value = current_button_value;
   current_button_value = digitalRead(buttonPin);
   if (previous_button_value == HIGH && current_button_value == LOW){
-    if (button_state == LOW){
-      //button_state = HIGH;
       button_state = !button_state;
       previous_button_value = current_button_value;
-    }
-    else if(button_state == HIGH)
-    {
-      // button_state = LOW;
-      previous_button_value = current_button_value;
-    }
-    //previous_button_value = current_button_value;
-
   }
+  else if (previous_button_value == LOW && current_button_value == HIGH){
+      previous_button_value = current_button_value;
+  }
+  
   
   //The operation of the robot will only be triggered if the button state is true.
   if (button_state == HIGH) {
