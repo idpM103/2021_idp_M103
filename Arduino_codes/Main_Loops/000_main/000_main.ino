@@ -20,7 +20,7 @@ int button_state = LOW;
 int reverse_state = LOW;
 int line_follow_state = HIGH;
 int block_detect_state = LOW; // This one is to start the detection/collection process
-int block_detected_state = LOW // This one sees if there is a block there
+int block_detected_state = LOW; // This one sees if there is a block there
 int end_of_rotation = LOW;
 int rotate_left_flag = LOW;
 int arm_raised = LOW;
@@ -73,7 +73,7 @@ void setup() {
   arm_servo.attach(5); // Whatever pin the servo should be on !!!!!!!!!!!
   arm_servo.write(servo_pos); // Servo goes to 0
   delay(1000); // Delay to make sure the servo goes to 0
-  arm_rasied = HIGH; // Sets arm flag
+  arm_raised = HIGH; // Sets arm flag
   
 }
 //确认button按下输出低
