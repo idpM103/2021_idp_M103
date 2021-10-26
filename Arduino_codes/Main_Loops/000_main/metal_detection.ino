@@ -6,6 +6,7 @@
 #define nonmetal_LED_Pin 6
 
 void detection();
+void classify();
 
 const int ultrasonic_height = 7.2 ; // 72mm from the design (up to 26oct)
 const int metal_threshold = 1.5; // unknown threshold for the hall effectors
@@ -34,13 +35,15 @@ void detection() {
   junction_counter = 0;
   forwards();
   delay(30);
-  //drive wibich to the block for further detection
+  //drive wibich towards the block for further detection
+  
   halt();
   digitalWrite (trigPin, HIGH);
   delay(50);
   digitalWrite (trigPin, LOW);
   duration=pulseIn(echoPin,HIGH);
   distance=(duration/2)/29.1;
+  //detect the block if under the sensor
   
   if (distance < ultrasonic_height){
   // need dimension from mechanical team  
@@ -52,7 +55,10 @@ void detection() {
     block_detected = LOW;
 
     }
+  }
+}
 
+void classify(){
   if (block_detected == HIGH) {
     if (hall_value >= metal_threshold) {
       
@@ -77,5 +83,3 @@ void detection() {
     
     }   
   }
-
-}
