@@ -26,13 +26,13 @@ int block_detect_state = LOW;//block_detect_state is somehow a flag for rotation
 int end_of_rotation = HIGH;
 int rotate_left_flag = LOW;
 int metal_state = LOW;
-int nonmetal_ledState = LOW;
 int sweep_done = LOW; 
 int block_detected = LOW;
 int block_classified = LOW;
 int along_line = LOW;
 int block_lost = LOW;
 int block_delivering = LOW;
+
 
 //Other variables
 int button_counter = 0;
