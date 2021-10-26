@@ -6,6 +6,7 @@
 #define nonmetal_LED_Pin 6
 
 void detection();
+
 const int ultrasonic_height = 7.2 ; // 72mm from the design (up to 26oct)
 const int metal_threshold = 1.5; // unknown threshold for the hall effectors
 int metal_state = LOW;
@@ -13,6 +14,7 @@ int metal_ledState = LOW;
 int nonmetal_ledState = LOW;
 int sweep_done = HIGH; // assume first sweep finished
 int block_detected = LOW;
+int block_classified = LOW;
 int distance; // variable for the distance measurement
 int duration;
 int hall_value;
@@ -65,6 +67,8 @@ void detection() {
       digitalWrite(nonmetal_LED_Pin, HIGH);   
          
     }
+    block_classified = HIGH;
+    // block classified and ready to go 
   } else {    
     
     rotate_left();
