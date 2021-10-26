@@ -96,6 +96,8 @@ void loop() {
 
     
     // Below is the block detection block, triggered after the third junction is encountered. 终止flag尚未设置。
+
+    // This needs to change to be done on the third Junction instead. 
     if(block_detect_state == HIGH){
       // Rotation state.
       if(end_of_rotation == LOW){
