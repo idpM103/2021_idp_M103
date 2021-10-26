@@ -3,6 +3,7 @@
 
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
+#include <Servo.h>
 
 //Pins
 #define left_most A3
@@ -18,9 +19,11 @@ int current_button_value = LOW;
 int button_state = LOW;        
 int reverse_state = LOW;
 int line_follow_state = HIGH;
-int block_detect_state = LOW;
+int block_detect_state = LOW; // This one is to start the detection/collection process
+int block_detected_state = LOW // This one sees if there is a block there
 int end_of_rotation = LOW;
 int rotate_left_flag = LOW;
+int arm_raised = LOW;
 
 //Other variables
 int button_counter = 0;
@@ -32,6 +35,7 @@ int right_most_value;
 int delta_threshold = 100;// Cut-off for sensor reading being over the line or not
 int left_threshold = 120;
 int right_threshold = 600;
+int servo_pos = 0;
 #define right_motor_speed 255     // Standard speed of motor
 #define left_motor_speed 255
 
@@ -55,11 +59,22 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *LeftMotor = AFMS.getMotor(4);
 Adafruit_DCMotor *RightMotor = AFMS.getMotor(3);
 
+// servo for the arm
+Servo arm_servo;
+
 void setup() {
   // Set up serial communication
   Serial.begin(9600);
   AFMS.begin();
+
   pinMode(buttonPin, INPUT);
+
+  // Sets the servo and makes sure that the arm is raised
+  arm_servo.attach(5); // Whatever pin the servo should be on !!!!!!!!!!!
+  arm_servo.write(servo_pos); // Servo goes to 0
+  delay(1000); // Delay to make sure the servo goes to 0
+  arm_rasied = HIGH; // Sets arm flag
+  
 }
 //确认button按下输出低
 void loop() {
@@ -97,7 +112,12 @@ void loop() {
     
     // Below is the block detection block, triggered after the third junction is encountered. 终止flag尚未设置。
 
-    // This needs to change to be done on the third Junction instead. 
+    // Can we have block detect state entered at either the third junction, or a time interval after the second.?? !!!!!!!!!!
+
+    if (block_detect_state == HIGH){
+      
+    }
+
     if(block_detect_state == HIGH){
       // Rotation state.
       if(end_of_rotation == LOW){
