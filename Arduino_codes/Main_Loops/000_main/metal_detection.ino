@@ -5,7 +5,7 @@
 #define metal_LED_Pin 5
 #define nonmetal_LED_Pin 6
 
-
+void detection();
 const int ultrasonic_height = 7.2 ; // 72mm from the design (up to 26oct)
 const int metal_threshold = 1.5; // unknown threshold for the hall effectors
 int metal_state = LOW;
@@ -14,20 +14,18 @@ int nonmetal_ledState = LOW;
 int sweep_done = HIGH; // assume first sweep finished
 int block_detected = LOW;
 int distance; // variable for the distance measurement
+int duration;
 int hall_value;
 
 
 
-void setup() {
+void detection() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   pinMode(metal_LED_Pin, OUTPUT);
   pinMode(nonmetal_LED_Pin, OUTPUT);
   
 
-}
-
-void loop() {
   // put your main code here, to run repeatedly:
   if (sweep_done == HIGH){
   //finish the sweep for fixing the orientation
@@ -54,7 +52,7 @@ void loop() {
     }
 
   if (block_detected == HIGH) {
-    if (halt_value >= metal_threshold) {
+    if (hall_value >= metal_threshold) {
       
       metal_state = HIGH;
       //metal_ledState = metal_state;
