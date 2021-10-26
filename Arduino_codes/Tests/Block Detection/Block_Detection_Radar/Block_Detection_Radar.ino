@@ -36,19 +36,19 @@ void setup() {
 
 }
 void loop() {
-
-
+  Serial.println(angle);
   //For each angle, we take the average of ten readings. The angles are just counters, it's not linked to any known data.
   if (counter == 9) {
     for (int i = 0; i <=9; i++){
       distance_average += distance_array[i];
     }
     distance_average = distance_average/10;
+    Serial.println(distance_average);
 
     // Once we have done ten readings, we move one increment
     Left_Wheel_Motor->run(FORWARD);
     Right_Wheel_Motor->run(BACKWARD);
-    delay (5);
+    delay (20);
     Left_Wheel_Motor->run(RELEASE);
     Right_Wheel_Motor ->run(RELEASE);
 
@@ -67,11 +67,14 @@ void loop() {
         counter += 1;
     }
     angle = number_lowest_distance/counter;
+    Serial.println(angle);
+    /*
     Left_Wheel_Motor->run(BACKWARD);
     Right_Wheel_Motor->run(FORWARD);
     delay (5 * (180 - angle));
     Left_Wheel_Motor->run(RELEASE);
     Right_Wheel_Motor ->run(RELEASE);
+    */
   }
   
   // Clears the trigPin condition
@@ -87,7 +90,9 @@ void loop() {
   // Calculating the distance
   distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
   distance_array[counter] = distance;
+  Serial.println(distance);
+  }
   counter +=1;
 
-  }
+  
 }
