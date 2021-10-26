@@ -5,7 +5,7 @@
 #define metal_LED_Pin 5
 #define nonmetal_LED_Pin 6
 
-void detection();
+void block_detection();
 void classify();
 
 const int ultrasonic_height = 7.2 ; // 72mm from the design (up to 26oct)
@@ -22,7 +22,7 @@ int hall_value;
 
 
 
-void detection() {
+void block_detection() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   pinMode(metal_LED_Pin, OUTPUT);
