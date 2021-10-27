@@ -64,6 +64,8 @@ void left ();
 void right ();
 void rotate_right();
 void rotate_left();
+void ultrasonic();
+void collection_sweep();
 unsigned long prev_increment_time_0 = 0;
 unsigned long prev_increment_time_1 = 0;
 const long min_increment_interval = 1000;
@@ -132,18 +134,7 @@ void loop() {
     if(sweep_done == HIGH){
       // Read the distance and the hall effect sensor value after enter this block
       hall_value = analogRead(hall_effect);
-      digitalWrite(trigPin, LOW);
-      delayMicroseconds(2);
-       // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
-      digitalWrite(trigPin, HIGH);
-      delayMicroseconds(10);
-      digitalWrite(trigPin, LOW);
-      // Reads the echoPin, returns the sound wave travel time in microseconds
-      duration = pulseIn(echoPin, HIGH); 
-      // Calculating the distance
-      distance = duration * 0.034 / 2;
-
-
+     
       // The first stage is to move the block forwards to check if there is a block collected.
       // Remember to turn on the along line flag after sweeping.
       if (along_line == HIGH){
@@ -151,10 +142,8 @@ void loop() {
         delay(10); // Delay every 0.01s.  
         detect_counter ++;
         // Block detected
-        if (distance < ultrasonic_height){
-          along_line = LOW;
-          block_detected = HIGH;
-          detect_counter = 0;
+        ultrasonic();
+        // we 
         }
         // Adjust the counter limit to longer the attempt time (0.01 N seconds) The block is regarded as lost if the limit is exceeded.
         if (detect_counter >= 500){
@@ -341,11 +330,14 @@ void loop() {
         line_follow();
       }
       
-      if (junction_counter >= 3) {
+      if (junction_counter >= 2) {
         line_follow_state = LOW;
         block_detect_state = HIGH;
         rotate_left_flag = HIGH;
         junction_counter = 0;
+        collection_sweep();
+        
+        // rotate flag off
         forwards();  // Move the robot forward for rotation.
         //delay(100);
         // Sign for testing
@@ -354,7 +346,7 @@ void loop() {
     }
     // End of the line following block.
     
-  }
+  
   else{
     reset_wibich();
   }

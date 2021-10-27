@@ -26,6 +26,8 @@ void ultrasonic() {
   // need dimension from mechanical team  
     
     block_detected = HIGH;
+    along_line = LOW;
+    detect_counter = 0;
     
   } else {
     block_detected = LOW;

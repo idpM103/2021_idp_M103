@@ -25,7 +25,7 @@ void collection_sweep(){
   halt();
   reverse_state = LOW;
   
-  rotate_right();
+  rotate_left();
   delay(500); // We turn right a bit
   halt();
 
@@ -34,18 +34,20 @@ void collection_sweep(){
     arm_drop();
   }
 
-  rotate_left();
+  rotate_right();
   delay(1000); // We turn left a lot (through the entire square), but not 180 yet
   halt();
 
   // This should tell when we're on the line? !!!!!!!
-  left_most_value  = analogRead(left_most);
-  while (left_most_value > left_threshold) {
-    rotate_left();
+  /*
+  right_most_value  = analogRead(right_most);
+  while (right_most_value > right_threshold) {
+    rotate_right();
     delay(50);
     halt();
-    left_most_value  = analogRead(left_most);
+    right_most_value  = analogRead(right_most);
   }
+  */
   along_line = HIGH;
   
   // There's a chance we need to do a 360 turn, then move forward a bit, then turn again - this should be simple as long as we can tell when we're on the line
