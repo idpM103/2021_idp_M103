@@ -10,7 +10,7 @@
 #define right_inner A2
 #define right_most A1
 const int buttonPin = 7;    // the number of the pushbutton pin
-#define hall_effect A1
+#define hall_effect A0
 #define echoPin 8 // attach pin D2 Arduino to pin Echo of HC-SR04
 #define trigPin 10 //attach pin D3 Arduino to pin Trig of HC-SR04
 #define metal_LED_Pin 12
