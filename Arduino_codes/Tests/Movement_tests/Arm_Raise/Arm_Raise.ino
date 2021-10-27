@@ -21,7 +21,6 @@ void loop() {
   arm_drop();
   delay(2000);
   arm_raise();
-  delay(2000);
   
 
 }

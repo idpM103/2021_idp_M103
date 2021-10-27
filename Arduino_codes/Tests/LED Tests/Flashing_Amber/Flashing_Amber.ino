@@ -1,11 +1,19 @@
 void setup() {
   // put your setup code here, to run once:
-  TCCR1A = 0;
-  TCCR1B = 0;
-  bitSet(TCCR1B, CS12);  // 256 prescaler
-  OCR1A = 62500/4; // This should toggle the LED every quarter second, meaning it's on for half every second (2HZ)
-  bitSet(TCCR1A, COM1A0); // Toggle pin OC1A (9)
-  pinMode(9, OUTPUT);
+  TCB0.CTRLB = TCB_CNTMODE_INT_gc; // Use timer compare mode
+  TCB0.CCMP = 25000*2.5; // Value to compare with. This is 1/10th of the tick rate, so 10 Hz
+  TCB0.INTCTRL = TCB_CAPT_bm; // Enable the interrupt
+  TCB0.CTRLA = TCB_CLKSEL_CLKTCA_gc | TCB_ENABLE_bm; // Use Timer A as clock, enable timer
+  
+  // And the interrupt handler:
+  
+  ISR(TCB0_INT_vect)
+  {
+  // Do something
+  
+  // Clear interrupt flag
+  TCB0.INTFLAGS = TCB_CAPT_bm;
+  }
 }
 
 void loop() {
