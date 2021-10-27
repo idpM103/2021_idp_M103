@@ -13,7 +13,7 @@
 // Block flag
 int block_detected = LOW;
 
-
+int get_distance();
 
 // defines variables
 long duration, distance_average; // variable for the duration of sound wave travel
