@@ -35,11 +35,19 @@ void collection_sweep(){
   }
 
   rotate_left();
-  delay(1000); // We turn left a lot (through the entire square)
+  delay(1000); // We turn left a lot (through the entire square), but not 180 yet
   halt();
-  
-}
 
-void collection_sweep_repeat() {
+  // This should tell when we're on the line? !!!!!!!
+  left_most_value  = analogRead(left_most);
+  while (left_most_value > left_threshold) {
+    rotate_left();
+    delay(50);
+    halt();
+    left_most_value  = analogRead(left_most);
+  }
+  along_line = HIGH;
   
+  // There's a chance we need to do a 360 turn, then move forward a bit, then turn again - this should be simple as long as we can tell when we're on the line
+  // Then we detect the block !!
 }
