@@ -19,7 +19,8 @@ const int buttonPin = 7;    // the number of the pushbutton pin
 // Flags
 int previous_button_value = LOW;
 int current_button_value = LOW;
-int button_state = LOW;        
+int button_state = LOW;   
+int return_state = LOW;     
 int reverse_state = LOW;
 int line_follow_state = HIGH;
 int block_detect_state = LOW;//block_detect_state is somehow a flag for rotation now.
@@ -37,6 +38,7 @@ int block_delivering = LOW;
 //Other variables
 int button_counter = 0;
 int junction_counter = 0;
+int block_counter = 0;
 int left_most_value;      // Left line sensor value-  higher number => lighter
 int left_inner_value;
 int right_inner_value;     // Right line sensor value
@@ -228,35 +230,63 @@ void loop() {
       }
       // The second stage is the block delivering stage.
       else if(block_delivering == HIGH){
-        // Rotate the robot to face the correct area.
-        if(end_of_rotation == LOW){
-          if(metal_state == HIGH){
-            rotate_right();
+        if (block_counter < 6){
+          // Rotate the robot to face the correct area.
+          if(end_of_rotation == LOW){
+            if(metal_state == HIGH){
+              rotate_right();
+            }
+            else{
+              rotate_left();
+            }
+            if(left_inner_value < left_threshold ){
+              end_of_rotation = HIGH;
+            }
+            else if (right_inner_value < right_threshold){
+              end_of_rotation = HIGH;
+            }
           }
           else{
-            rotate_left();
+            // At the dropping point
+            if (left_most_value < left_threshold && left_inner_value < left_threshold && right_inner_value < right_threshold && right_most_value < right_threshold){
+              block_classified = LOW; // Leave the block.
+              block_delivering = LOW;
+              // can add reading of ultrasonic sensor again as well? will increase time?
+              halt();
+            }
+            // Move towards the dropping point.
+            else{
+              line_follow();
+            }
           }
-          if(left_inner_value < left_threshold ){
-            end_of_rotation = HIGH;
-          }
-          else if (right_inner_value < right_threshold){
-            end_of_rotation = HIGH;
-          }
+          block_counter ++;
+          return_state = LOW;
+          junction_counter = 0;
+          //line_following_state = HIGH;
+        } else {
+          return_state = HIGH;
         }
-        else{
-          // At the dropping point
-          if (left_most_value < left_threshold && left_inner_value < left_threshold && right_inner_value < right_threshold && right_most_value < right_threshold){
-            block_classified = LOW; // Leave the block.
-            block_delivering = LOW;
-            halt();
-          }
-          // Move towards the dropping point.
-          else{
-            line_follow();
-          }
-        }
+        
       }
     }
+    // The third stage is to return to the start area / restart the loop, controlled by the return_state flag
+    /*if (return_state == LOW){
+          if(end_of_rotation == LOW){
+            if(metal_state == HIGH){
+              rotate_right();
+            }else{
+              rotate_left();
+            }
+            if(left_inner_value < left_threshold ){
+              end_of_rotation = HIGH;
+            }
+            else if (right_inner_value < right_threshold){
+              end_of_rotation = HIGH;
+            } 
+            line_follow_state = HIGH;
+    }*/
+    
+    
     
 
 
@@ -329,6 +359,7 @@ void loop() {
       }
       
       if (junction_counter >= 3) {
+        // need an extra conditions for normal line following with junction counter
         line_follow_state = LOW;
         block_detect_state = HIGH;
         rotate_left_flag = HIGH;
@@ -424,6 +455,13 @@ void reset_wibich(){
   junction_counter = 0;
   end_of_rotation = LOW;
   rotate_left_flag = LOW;
+  metal_state = LOW;
+  sweep_done = LOW; 
+  block_detected = LOW;
+  block_classified = LOW;
+  along_line = LOW;
+  block_lost = LOW;
+  block_delivering = LOW
 }
 
 
