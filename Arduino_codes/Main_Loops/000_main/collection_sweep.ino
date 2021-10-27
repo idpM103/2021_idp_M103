@@ -4,15 +4,15 @@ void arm_drop(){
   // Drops the arm - we'll need to find the right position value
   servo_pos = 180;
   arm_servo.write(servo_pos);
-  delay(1000)
-  arm_raised = LOW
+  delay(1000);
+  arm_raised = LOW;
 }
 
 void arm_raise(){
   // Raises the arm - we'll need to find the right position value
   servo_pos = 0;
   arm_servo.write(servo_pos);
-  delay(1000)
+  delay(1000);
   arm_raised = HIGH;
 }
 
@@ -21,9 +21,9 @@ void collection_sweep(){
   
   reverse_state = HIGH;
   forwards();
-  delay(500) // We reverse a bit
+  delay(500); // We reverse a bit
   halt();
-  reverse_state = LOW
+  reverse_state = LOW;
   
   rotate_right();
   delay(500); // We turn right a bit
