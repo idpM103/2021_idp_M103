@@ -675,3 +675,50 @@ void arm_raise(){
   arm_servo.detach();
   arm_raised = HIGH;
 }
+
+void final_delivery_right(){
+  if(counter < 2)
+  {
+    rotate_right();
+    if(left_most_value < left_most_threshold)
+    {
+      counter ++;
+      delay(250);
+    }
+    
+  }
+  else{
+    rotate_left();
+    delay(200);
+    forwards();
+    delay(1250);
+    backwards();
+    delay(1500);
+    rotate_right();
+    delay(1500);
+    halt();
+    delay(10000);
+  }
+}
+void final_delivery_left(){
+  if(counter < 2)
+  {
+    rotate_left();
+    if(right_most_value < right_most_threshold)
+    {
+      counter ++;
+      delay(250);
+    }
+    
+  }
+  else{
+    rotate_right();
+    delay(200);
+    forwards();
+    delay(1250);
+    backwards();
+    delay(1500);
+    rotate_left();
+    delay(1500);
+  }
+}
